@@ -23,5 +23,16 @@ namespace IceCreamMAUI
                 Routing.RegisterRoute(pageType.Name, pageType);
             }
         }
+
+        private async void FlyoutFooter_Tapped(object sender, TappedEventArgs e)
+        {
+            //Add your github link
+            await Launcher.OpenAsync("https://github.com/HMZ-rajput/IceCreamMAUI");
+        }
+
+        private async void SignoutMenuItem_Clicked(object sender, EventArgs e)
+        {
+            await Shell.Current.DisplayAlert("Alert","signout","OK");
+        }
     }
 }
