@@ -1,3 +1,6 @@
+using IceCreamMAUI.Api.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,7 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Icecream")));
+
 var app = builder.Build();
+
+#if DEBUG
+MigrateDatabase(app.Services);
+#endif
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -37,6 +46,16 @@ app.MapGet("/weatherforecast", () =>
 .WithOpenApi();
 
 app.Run();
+
+static void MigrateDatabase(IServiceProvider sp)
+{
+    var scope = sp.CreateScope();
+    var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+    if (dataContext.Database.GetPendingMigrations().Any())
+    {
+        dataContext.Database.Migrate();
+    }
+}
 
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
