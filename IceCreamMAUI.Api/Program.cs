@@ -19,7 +19,9 @@ builder.Services.AddAuthentication(options =>
 }).AddJwtBearer(jwtoptions => jwtoptions.TokenValidationParameters = TokenService.GetTokenValidationParameters(builder.Configuration));
 builder.Services.AddAuthentication();
 
-builder.Services.AddTransient<TokenService>();
+builder.Services.AddTransient<TokenService>()
+    .AddTransient<PasswordService>();
+
 
 var app = builder.Build();
 
