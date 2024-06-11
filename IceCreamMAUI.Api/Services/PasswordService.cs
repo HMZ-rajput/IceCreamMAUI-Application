@@ -25,7 +25,7 @@ namespace IceCreamMAUI.Api.Services
         {
             var newHashedPassword = GenerateHashedPassword(plainPassword, salt);
 
-            return newHashedPassword.Equals(newHashedPassword);
+            return newHashedPassword == hashedPassword;
         }
 
         private static string GenerateHashedPassword(string plainPassword, string salt) 

@@ -1,13 +1,16 @@
 ﻿using IceCreamMAUI.Pages;
+using IceCreamMAUI.Services;
 
 namespace IceCreamMAUI
 {
     public partial class AppShell : Shell
     {
-        public AppShell()
+        private readonly AuthService _authseService;
+        public AppShell(AuthService authService)
         {
             InitializeComponent();
             RegisterRoute();
+            _authseService = authService;
         }
 
         private readonly static Type[] _routePageTypes =
@@ -32,7 +35,8 @@ namespace IceCreamMAUI
 
         private async void SignoutMenuItem_Clicked(object sender, EventArgs e)
         {
-            await Shell.Current.DisplayAlert("Alert","signout","OK");
+            _authseService.Signout();
+            await Shell.Current.GoToAsync($"//{nameof(OnboardingPage)}");
         }
     }
 }

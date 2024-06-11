@@ -17,6 +17,16 @@
                 <Setter Property="HeightRequest" Value="50"/>
                 <Setter Property="WidthRequest" Value="250"/>
             </Style>
+            <Style TargetType="Entry">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="TextColor" Value="DeepPink"/>
+                <Setter Property="PlaceholderColor" Value="Pink"/>
+            </Style>
+            <Style TargetType="Editor">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="TextColor" Value="DeepPink"/>
+                <Setter Property="PlaceholderColor" Value="Pink"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
