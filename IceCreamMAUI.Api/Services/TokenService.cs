@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using IceCreamMAUI.Shared.Dtos;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -21,7 +22,7 @@ namespace IceCreamMAUI.Api.Services
                 IssuerSigningKey = GetSymmetricSecurityKey(configuration)
             };
 
-        public string GenerateJwt(Guid UserId, string username, string email, string address)
+        public string GenerateJwt(LoggedInUser user)
         {
             var securityKey = GetSymmetricSecurityKey(_configration);
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -29,10 +30,10 @@ namespace IceCreamMAUI.Api.Services
             var issuer = _configration["Jwt:Issuer"];
             var expireInMinutes = Convert.ToInt32(_configration["Jwt:ExpireInMinutes"]);
             Claim[] calims = [
-                new Claim(ClaimTypes.NameIdentifier, UserId.ToString()),
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.StreetAddress, address)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.StreetAddress, user.Address)
                 ];
 
             var token = new JwtSecurityToken(
