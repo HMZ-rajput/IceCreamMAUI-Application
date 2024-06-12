@@ -39,9 +39,6 @@
 
 
         </VerticalStackLayout>
-        <ActivityIndicator HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           Color="DeepPink"
-                           IsRunning="{Binding IsBusy}"/>
+        <ActivityIndicator IsRunning="{Binding IsBusy}"/>
     </Grid>
 </ContentPage>

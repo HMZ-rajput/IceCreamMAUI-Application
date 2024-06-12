@@ -1,13 +1,67 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IceCreamMAUI.ViewModels"
+             xmlns:dto="clr-namespace:IceCreamMAUI.Shared.Dtos;assembly=IceCreamMAUI.Shared"
              x:Class="IceCreamMAUI.Pages.HomePage"
              Title="HomePage"
-            Shell.NavBarIsVisible="False">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+            Shell.NavBarIsVisible="False"
+             x:DataType="vm:HomeViewModel"
+             BackgroundColor="#EEE">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="10,25,10,10">
+                <VerticalStackLayout Spacing="10" Margin="0,0,0,25">
+                    <Label Text="{Binding UserName, StringFormat='Hello {0}'}"
+                       FontSize="35"
+                       FontAttributes="Bold"/>
+                    <Label Text="What would you like to have today?"
+                       FontSize="18"
+                       FontAttributes="Bold"/>
+
+                    <CollectionView ItemsSource="{Binding Icecreams}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical"
+                                     Span="2"
+                                     VerticalItemSpacing="15"
+                                             HorizontalItemSpacing="15"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="dto:IcecreamDto">
+                                <Border Background="#FBDBDE"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 10">
+                                    <Grid RowDefinitions="*,Auto,Auto">
+                                        <Image Grid.Row="0"
+                                               Source="{Binding Image}"
+                                               HeightRequest="200"
+                                               Aspect="AspectFill"/>
+                                        <Label Grid.Row="1"
+                                               Text="{Binding Name}"
+                                               FontSize="16"
+                                               Padding="5,10"
+                                               HorizontalOptions="Center"
+                                               TextColor="DeepPink"
+                                               FontAttributes="Bold"
+                                               HorizontalTextAlignment="Center"/>
+                                        <Label Grid.Row="2"
+                                               Text="{Binding Price, StringFormat='{0:C}'}"
+                                               FontSize="16"
+                                               HorizontalOptions="End"
+                                               FontAttributes="Bold"
+                                               Padding="5" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        <ActivityIndicator IsRunning="{Binding IsBusy}"/>
+    </Grid>
+    
 </ContentPage>

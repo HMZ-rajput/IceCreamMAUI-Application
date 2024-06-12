@@ -1,5 +1,4 @@
 using IceCreamMAUI.Services;
-using Java.Lang;
 
 namespace IceCreamMAUI.Pages;
 
