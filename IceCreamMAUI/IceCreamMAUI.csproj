@@ -39,6 +39,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+		
+		<!-- deployment on physical device-->	
+	
 		<EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
 	</PropertyGroup>
 
@@ -76,7 +79,6 @@
 	<ItemGroup>
 	  <Folder Include="Components\" />
 	  <Folder Include="Data\" />
-	  <Folder Include="Models\" />
 	</ItemGroup>
 
 	<ItemGroup>

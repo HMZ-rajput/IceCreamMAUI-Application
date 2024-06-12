@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IceCreamMAUI.Shared.Dtos
 {
-    public record IcecreamOptionDto(string Flavor, string Topping);
+    public record struct IcecreamOptionDto(string Flavor, string Topping);
     public record IcecreamDto(int Id, string Name, string Image, double Price, IcecreamOptionDto[] Options);
 
 }

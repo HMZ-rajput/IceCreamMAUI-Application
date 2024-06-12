@@ -17,6 +17,9 @@ namespace IceCreamMAUI
             [
                 typeof(SigninPage),
                 typeof(SignupPage),
+                typeof(MyOrdersPage),
+                typeof(OrderDetailsPage),
+                typeof(DetailsPage),
             ];
 
         private static void RegisterRoute()
