@@ -48,5 +48,17 @@ namespace IceCreamMAUI.Api.Services
                 return ResultDto.Failure(ex.Message);
             }
         }
+
+        public async Task<OrderDto[]> GetUserOrdersAsync(Guid userId)=>
+            await _context.Orders
+                .Where(o => o.CustomerId == userId)
+                .Select(o => new OrderDto(o.Id, o.OrderAt, o.TotalPrice, o.Items.Count))
+                .ToArrayAsync();
+
+        public async Task<OrderItemDto[]> GetUserOrderItemsAsync(long orderId, Guid userId)=>
+            await _context.OrderItems
+            .Where(i=>i.OrderId==orderId && i.Order.CustomerId== userId)
+            .Select(i=>new OrderItemDto(i.Id,i.IcecreamId,i.Name,i.Quantity,i.Price,i.Flavor,i.Topping))
+            .ToArrayAsync();
     }
 }

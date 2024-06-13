@@ -4,7 +4,7 @@
     {
         public double TotalPrice = Quantity * Price;
     }
-    public record OrderDto(long Id, DateTime OrderedAt, double TotalPrice);
+    public record OrderDto(long Id, DateTime OrderedAt, double TotalPrice, int ItemsCount=0);
     public record OrderPlaceDto(OrderDto Order, OrderItemDto[] Items);
 
 }

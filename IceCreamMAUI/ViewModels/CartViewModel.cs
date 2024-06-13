@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using IceCreamMAUI.Models;
+using IceCreamMAUI.Pages;
 using IceCreamMAUI.Services;
 using IceCreamMAUI.Shared.Dtos;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,10 +21,14 @@ namespace IceCreamMAUI.ViewModels
         public static event EventHandler<int>? TotalCartCountChanged;
 
         private readonly DatabaseService _databaseService;
+        private readonly IOrderApi _orderApi;
+        private readonly AuthService _authService;
 
-        public CartViewModel(DatabaseService databaseService)
+        public CartViewModel(DatabaseService databaseService, IOrderApi orderApi, AuthService authService)
         {
             _databaseService = databaseService;
+            _orderApi = orderApi;
+            _authService = authService;
         }
 
         public async void AddItemToCart(IcecreamDto icecream, int quantity, string flavor, string topping)
@@ -105,18 +111,7 @@ namespace IceCreamMAUI.ViewModels
         [RelayCommand]
         public async Task ClearCartAsync()
         {
-            if (CartItems.Count == 0)
-            {
-                await ShowAlertMessage("No items in cart.");
-                return;
-            }
-            if(await ConfirmAsync("Clear Cart","Do you really want to remove all items?"))
-            {
-                await _databaseService.ClearCartAsync();
-                CartItems.Clear();
-                await ShowToastAsync("Cart cleared");
-                NotifyCartCountChange();
-            }
+            await ClearCartInternalAsync(fromPlaceOrder: false);
         }
 
         [RelayCommand]
@@ -140,6 +135,71 @@ namespace IceCreamMAUI.ViewModels
 
                 await ShowToastAsync("Item Removed");
                 NotifyCartCountChange();
+            }
+        }
+
+        private async Task ClearCartInternalAsync(bool fromPlaceOrder)
+        {
+            if (!fromPlaceOrder && CartItems.Count == 0)
+            {
+                await ShowAlertMessage("No items in cart.");
+                return;
+            }
+
+            if (fromPlaceOrder ||  await ConfirmAsync("Clear Cart", "Do you really want to remove all items?"))
+            {
+                await _databaseService.ClearCartAsync();
+                CartItems.Clear();
+
+                if(!fromPlaceOrder)
+                    await ShowToastAsync("Cart cleared");
+
+                NotifyCartCountChange();
+            }
+        }
+
+        [RelayCommand]
+        private async Task PlaceOrderAsync()
+        {
+            if (CartItems.Count == 0)
+            {
+                await ShowAlertMessage("No items in cart. Add items in cart to place order.");
+                return;
+            }
+            IsBusy = true;
+            try
+            {
+                var order = new OrderDto(0, DateTime.Now, CartItems.Sum(i => i.TotalPrice));
+                var orderItems = CartItems.Select(i => new OrderItemDto(0, i.IcecreamId, i.Name, i.Quantity, i.Price, i.FlavorName, i.ToppingName)).ToArray();
+                var orderPlaceDto = new OrderPlaceDto(order, orderItems);
+
+                var result = await _orderApi.PlaceOrderAsync(orderPlaceDto);
+                if (!result.IsSuccess)
+                {
+                    await ShowAlertMessage(result.ErrorMessage);
+                    return;
+                }
+
+                //if order place success
+                await ShowToastAsync("Order Placed");
+                await ClearCartInternalAsync(fromPlaceOrder: true);
+
+
+            }
+            catch (ApiException ex)
+            {
+                if (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    await ShowAlertMessage("Session Expired");
+                    _authService.Signout();
+                    await GoToAsync($"//{nameof(OnboardingPage)}");
+                    return;
+                }
+                await ShowAlertMessage(ex.Message);
+            }
+            finally
+            {
+                  IsBusy = false;
             }
         }
     }

@@ -59,6 +59,15 @@ public static class MauiProgram
 
         builder.Services.AddTransient<CartPage>();
 
+        builder.Services.AddTransient<ProfileViewModel>()
+            .AddTransient<ProflePage>();
+
+        builder.Services.AddTransient<OrdersViewModel>()
+            .AddTransient<MyOrdersPage>();
+
+        builder.Services.AddTransient<OrderDetailsViewModel>()
+            .AddTransient<OrderDetailsPage>();
+
 
         ConfigureRefit(builder.Services);
         return builder.Build();
