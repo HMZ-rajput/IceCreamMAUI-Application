@@ -1,12 +1,78 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+            xmlns:vm="clr-namespace:IceCreamMAUI.ViewModels"
+            xmlns:models="clr-namespace:IceCreamMAUI.Models"
+            xmlns:dto="clr-namespace:IceCreamMAUI.Shared.Dtos;assembly=IceCreamMAUI.Shared"
              x:Class="IceCreamMAUI.Pages.CartPage"
-             Title="My Cart">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="My Cart"
+             x:DataType="vm:CartViewModel"
+             Background="#EEE">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Clear Cart" Command="{Binding ClearCartCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <Grid Padding="10">
+        <ScrollView Padding="0,0,0,60">
+            <CollectionView ItemsSource="{Binding CartItems}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:CartItem">
+                        <Border StrokeShape="RoundRectangle 10"
+                                Stroke="LightPink"
+                                Background="LightPink"
+                                Padding="10">
+                            <Grid ColumnDefinitions="40,*,Auto,50">
+                                <Label Text="{Binding Quantity}"
+                                       VerticalOptions="Center"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       Grid.Column="0"/>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                    <Label Text="{Binding Name}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="DeepPink"/>
+                                    <Label FontSize="12">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding FlavorName}"/>
+                                                <Span Text=", "/>
+                                                <Span Text="{Binding ToppingName}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="2"
+                                       Text="{Binding TotalPrice, StringFormat='{0:C}'}"
+                                       FontAttributes="Bold"
+                                       FontSize="15"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="End"/>
+
+                                <ImageButton Grid.Column="3"
+                                             Source="trash"
+                                             HeightRequest="24"
+                                             WidthRequest="24"
+                                             VerticalOptions="Center"
+                                             HorizontalOptions="End"
+                                             Command="{Binding Source={x:RelativeSource AncestorType={x:Type vm:CartViewModel}},Path=RemoveCartItemCommand}"
+                                             CommandParameter="{Binding Id}">
+                                    <ImageButton.Behaviors>
+                                        <toolkit:IconTintColorBehavior TintColor="Maroon"/>
+                                    </ImageButton.Behaviors>
+                                </ImageButton>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+        <Button Text="Place Order" VerticalOptions="End"
+                HorizontalOptions="Center"/>
+        <ActivityIndicator IsRunning="{Binding IsBusy}"/>
+    </Grid>
+    
 </ContentPage>

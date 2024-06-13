@@ -4,6 +4,8 @@ using IceCreamMAUI.Services;
 using IceCreamMAUI.ViewModels;
 using Microsoft.Extensions.Logging;
 using Refit;
+using System.Net;
+
 #if ANDROID
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -37,6 +39,8 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
+        builder.Services.AddSingleton<DatabaseService>();
+
         builder.Services.AddTransient<AuthViewModel>()
             .AddTransient<SignupPage>()
             .AddTransient<SigninPage>();
@@ -53,41 +57,23 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<CartViewModel>();
 
+        builder.Services.AddTransient<CartPage>();
+
+
         ConfigureRefit(builder.Services);
         return builder.Build();
     }
 
     private static void ConfigureRefit(IServiceCollection services)
     {
-        var refitSettings = new RefitSettings
-        {
-            HttpMessageHandlerFactory = () =>
-            {
-                //return http message handler
-#if ANDROID
-                return new AndroidMessageHandler
-                {
-                    ServerCertificateCustomValidationCallback = (httpRequestMessage, certificate, chain, sslPolicyErrors) =>
-                    {
-                        return certificate?.Issuer == "CN=localhost" || sslPolicyErrors == SslPolicyErrors.None;
-                    }
-                };
-#elif IOS
-                return new NSUrlSessionHandler
-                {
-                    TrustOverrideForUrl = (NSUrlSessionHandler sender, string url, SecTrust trust) =>
-                        url.StartsWith("https://localhost")
-                };
-#endif
-                return null;
-            }
-        };
-
-        services.AddRefitClient<IAuthApi>(refitSettings)
+        services.AddRefitClient<IAuthApi>(GetRefitSetting)
             .ConfigureHttpClient(SetHttpClient);
 
-        services.AddRefitClient<IIcecreamApi>(refitSettings)
+        services.AddRefitClient<IIcecreamApi>(GetRefitSetting)
             .ConfigureHttpClient(SetHttpClient);
+
+        services.AddRefitClient<IOrderApi>(GetRefitSetting)
+    .ConfigureHttpClient(SetHttpClient);
 
         static void SetHttpClient(HttpClient httpClient)
         {
@@ -100,6 +86,37 @@ public static class MauiProgram
             }
 
             httpClient.BaseAddress = new Uri(baseUrl);
+        }
+
+        static RefitSettings GetRefitSetting(IServiceProvider serviceProvider)
+        {
+            var authService = serviceProvider.GetRequiredService<AuthService>();
+            var refitSettings = new RefitSettings
+            {
+                HttpMessageHandlerFactory = () =>
+                {
+                    //return http message handler
+#if ANDROID
+                    return new AndroidMessageHandler
+                    {
+                        ServerCertificateCustomValidationCallback = (httpRequestMessage, certificate, chain, sslPolicyErrors) =>
+                        {
+                            return certificate?.Issuer == "CN=localhost" || sslPolicyErrors == SslPolicyErrors.None;
+                        }
+                    };
+#elif IOS
+                return new NSUrlSessionHandler
+                {
+                    TrustOverrideForUrl = (NSUrlSessionHandler sender, string url, SecTrust trust) =>
+                        url.StartsWith("https://localhost")
+                };
+#endif
+                    return null;
+                },
+                AuthorizationHeaderValueGetter = (_, __) =>
+                Task.FromResult(authService.Token ?? string.Empty)
+            };
+            return refitSettings;
         }
     }
 }

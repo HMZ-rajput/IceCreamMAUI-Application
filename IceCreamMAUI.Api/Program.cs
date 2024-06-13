@@ -23,7 +23,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddTransient<TokenService>()
     .AddTransient<PasswordService>()
     .AddTransient<AuthService>()
-    .AddTransient<IcecreamService>();
+    .AddTransient<IcecreamService>()
+    .AddTransient<OrderService>();
 
 
 var app = builder.Build();

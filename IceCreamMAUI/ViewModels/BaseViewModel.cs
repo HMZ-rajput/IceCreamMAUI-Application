@@ -25,6 +25,9 @@ namespace IceCreamMAUI.ViewModels
         protected async Task ShowAlertMessage(string message) =>
             await Shell.Current.DisplayAlert("Alert", message, "OK");
 
+        protected async Task<bool> ConfirmAsync(string title, string message)=>
+            await Shell.Current.DisplayAlert(title, message, "Yes", "No");
+
         protected async Task ShowToastAsync(string message)=> await Toast.Make(message).Show();
     }
 }
