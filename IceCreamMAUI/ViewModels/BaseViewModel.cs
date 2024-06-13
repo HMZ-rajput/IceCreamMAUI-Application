@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,7 @@ namespace IceCreamMAUI.ViewModels
 
         protected async Task ShowAlertMessage(string message) =>
             await Shell.Current.DisplayAlert("Alert", message, "OK");
+
+        protected async Task ShowToastAsync(string message)=> await Toast.Make(message).Show();
     }
 }
