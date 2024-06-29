@@ -34,16 +34,12 @@
                                                 <FormattedString>
                                                     <Span Text="{Binding Flavor}" TextColor="#333"/>
                                                     <Span Text=", "/>
-                                                    <Span Text="{Binding Topping}"TextColor="#333"/>
+                                                    <Span Text="{Binding Topping}" TextColor="#333"/>
                                                 </FormattedString>
                                             </Label.FormattedText>
                                         </Label>
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="2"
-                                           Text="{Binding TotalPrice, StringFormat='{0:C}'}"
-                                           VerticalOptions="Center"
-                                           FontSize="15"
-                                           FontAttributes="Bold"/>
+
                                 </Grid>
                             </StackLayout>
                         </StackLayout>

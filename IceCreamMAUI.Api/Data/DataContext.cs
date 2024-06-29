@@ -23,7 +23,7 @@ namespace IceCreamMAUI.Api.Data
         private static void AddSeedData(ModelBuilder modelBuilder)
         {
             Icecream[] icecreams = [
-           new Icecream { Id = 1, Name = "Vanilla Delight", Image = "https://raw.githubusercontent.com/Abhayprince/Images-Icons/main/Icecreams/small/ic_0.jpg", Price = 6.25 },
+           new Icecream { Id = 1, Name = "Jungkook", Image = "https://upload.wikimedia.org/wikipedia/commons/9/9f/Jeon_Jungkook_at_the_White_House%2C_31_May_2022.jpg", Price = 0.01 },
             new Icecream { Id = 2, Name = "ChocoBerry Bliss", Image = "https://raw.githubusercontent.com/Abhayprince/Images-Icons/main/Icecreams/small/ic_1.jpg", Price = 7.5 },
             new Icecream { Id = 3, Name = "Minty Cookie Crunch", Image = "https://raw.githubusercontent.com/Abhayprince/Images-Icons/main/Icecreams/small/ic_2.jpg", Price = 8.75 },
             new Icecream { Id = 4, Name = "Strawberry Dream", Image = "https://raw.githubusercontent.com/Abhayprince/Images-Icons/main/Icecreams/small/ic_3.jpg", Price = 6.95 },
